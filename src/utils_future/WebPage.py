@@ -1,0 +1,65 @@
+import os
+import time
+from functools import cached_property
+
+import requests
+from bs4 import BeautifulSoup
+from utils import File, Hash, Log
+
+from scraper.AbstractScraper import AbstractScraper
+
+log = Log("WebPage")
+
+
+class WebPage(object):
+    def __init__(self, url):
+        self.url = url
+
+    @cached_property
+    def params(self) -> dict[str, str]:
+        return dict(
+            [param.split("=") for param in self.url.split("?")[1].split("&")]
+        )
+
+    @staticmethod
+    def get_html_dir():
+        html_dir = os.path.join(
+            AbstractScraper.TEMP_DATA_PATH, "common", "html"
+        )
+        if not os.path.exists(html_dir):
+            os.makedirs(html_dir)
+        return html_dir
+
+    HTML_DIR = get_html_dir()
+
+    @cached_property
+    def html(self):
+        html_path = os.path.join(
+            WebPage.HTML_DIR, Hash.md5(self.url) + ".html"
+        )
+        html_file = File(html_path)
+        if html_file.exists:
+            log.warning(f"File Exists {html_path}")
+            return html_file.read()
+
+        timeout = 1
+        html = None
+        while True:
+            log.debug(f"[{timeout}s] Opening {self.url}...")
+            try:
+                html = requests.get(self.url, timeout=timeout).text
+                break
+            except Exception as e:
+                log.error(f"Error: {e}")
+                timeout *= 2
+                time.sleep(timeout)
+
+        n = len(html)
+        size_k = n / 1024
+        html_file.write(html)
+        log.info(f"Wrote {html_path} {size_k:.2f}KB")
+        return html
+
+    @cached_property
+    def soup(self):
+        return BeautifulSoup(self.html, "html.parser")
