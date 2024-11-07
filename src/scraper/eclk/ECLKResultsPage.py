@@ -21,7 +21,7 @@ class ECLKResultsPage(AbstractPDResultsPage):
         return "eclk"
 
     ED_NAME_IDX = {"Mahanuwara": "Kandy"}
-    PD_NAME_IDX = {"Nuwara Eliya Maskeliya": "N.E.Maskeliya"}
+    PD_NAME_IDX = {"N.E.Maskeliya": "Nuwara Eliya Maskeliya"}
 
     @cached_property
     def pd_id(self) -> str:
