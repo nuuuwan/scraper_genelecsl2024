@@ -1,12 +1,11 @@
 import os
+import tempfile
 import time
 from functools import cached_property
 
 import requests
 from bs4 import BeautifulSoup
 from utils import File, Hash, Log
-
-from scraper.AbstractScraper import AbstractScraper
 
 log = Log("WebPage")
 
@@ -15,6 +14,12 @@ class WebPage(object):
     def __init__(self, url):
         self.url = url
 
+    @staticmethod
+    def get_temp_data_path():
+        return os.path.join(tempfile.gettempdir(), "scraper_genelecsl2024")
+
+    TEMP_DATA_PATH = get_temp_data_path()
+
     @cached_property
     def params(self) -> dict[str, str]:
         return dict(
@@ -22,15 +27,13 @@ class WebPage(object):
         )
 
     @staticmethod
-    def get_html_dir():
-        html_dir = os.path.join(
-            AbstractScraper.TEMP_DATA_PATH, "common", "html"
-        )
+    def get_html_dir(TEMP_DATA_PATH):
+        html_dir = os.path.join(TEMP_DATA_PATH, "common", "html")
         if not os.path.exists(html_dir):
             os.makedirs(html_dir)
         return html_dir
 
-    HTML_DIR = get_html_dir()
+    HTML_DIR = get_html_dir(TEMP_DATA_PATH)
 
     @cached_property
     def html(self):
@@ -39,13 +42,12 @@ class WebPage(object):
         )
         html_file = File(html_path)
         if html_file.exists:
-            log.warning(f"File Exists {html_path}")
             return html_file.read()
 
         timeout = 1
         html = None
         while True:
-            log.debug(f"[{timeout}s] Opening {self.url}...")
+            log.debug(f"🌏 {self.url} [{timeout}s]")
             try:
                 html = requests.get(self.url, timeout=timeout).text
                 break

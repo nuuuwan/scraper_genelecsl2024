@@ -1,19 +1,24 @@
-import os
-from functools import cached_property
+from functools import cache, cached_property
 
-from elections_lk import PartyToVotes, Result, VoteSummary
+from elections_lk import PartyToVotes, VoteSummary
 from gig import Ent, EntType
-from utils import JSONFile, Log
+from utils import Log
 
-from scraper.AbstractScraper import AbstractScraper
-from utils_future import StringX, WebPage
+from scraper.AbstractPDResultsPage import AbstractPDResultsPage
+from utils_future import StringX
 
 log = Log("ECLKResultsPage")
 
 
-class ECLKResultsPage(WebPage):
+class ECLKResultsPage(AbstractPDResultsPage):
+
     def __init__(self, href):
         super().__init__("https://results.elections.gov.lk/pre2024/" + href)
+
+    @classmethod
+    @cache
+    def get_id(cls):
+        return "eclk"
 
     ED_NAME_IDX = {"Mahanuwara": "Kandy"}
     PD_NAME_IDX = {"Nuwara Eliya Maskeliya": "N.E.Maskeliya"}
@@ -33,8 +38,10 @@ class ECLKResultsPage(WebPage):
         pd = Ent.list_from_name_fuzzy(pd_name, EntType.PD)[0]
         return pd.id
 
-    @staticmethod
-    def parse_party_to_votes(table) -> PartyToVotes:
+    @cached_property
+    def party_to_votes(self) -> PartyToVotes:
+        table_list = self.soup.find_all("table")
+        table = table_list[0]
         tr_list = table.find_all("tr")
         d = {}
         for tr in tr_list:
@@ -56,8 +63,10 @@ class ECLKResultsPage(WebPage):
         "Valid Votes": "valid",
     }
 
-    @staticmethod
-    def parse_vote_summary(table) -> VoteSummary:
+    @cached_property
+    def vote_summary(self) -> VoteSummary:
+        table_list = self.soup.find_all("table")
+        table = table_list[1]
         tr_list = table.find_all("tr")
         d = {}
         for tr in tr_list:
@@ -76,60 +85,3 @@ class ECLKResultsPage(WebPage):
             d["valid"],
             d["rejected"],
         )
-
-    @staticmethod
-    def validate(result):
-        assert result.party_to_votes.total == result.vote_summary.valid
-        assert result.vote_summary.electors >= result.vote_summary.polled
-        assert (
-            result.vote_summary.polled
-            == result.vote_summary.valid + result.vote_summary.rejected
-        )
-
-    @staticmethod
-    def get_pd_result_dir() -> str:
-        pd_result_dir = os.path.join(
-            AbstractScraper.TEMP_DATA_PATH,
-            "eclk",
-            "pd_results",
-        )
-        if not os.path.exists(pd_result_dir):
-            os.makedirs(pd_result_dir)
-        return pd_result_dir
-
-    PD_RESULT_DIR = get_pd_result_dir()
-
-    @cached_property
-    def pd_result_nocache(self) -> Result:
-
-        table_list = self.soup.find_all("table")
-
-        result = Result(
-            id=self.pd_id,
-            vote_summary=self.parse_vote_summary(table_list[1]),
-            party_to_votes=self.parse_party_to_votes(table_list[0]),
-        )
-        self.validate(result)
-
-        return result
-
-    @cached_property
-    def pd_result(self) -> Result:
-
-        pd_result_path = os.path.join(
-            self.PD_RESULT_DIR,
-            self.pd_id + ".json",
-        )
-        pd_result_file = JSONFile(pd_result_path)
-        if pd_result_file.exists:
-            d = pd_result_file.read()
-            log.warning(f"File Exists {pd_result_path}")
-            return Result.from_dict(d)
-
-        result = self.pd_result_nocache
-
-        d = result.to_dict()
-        pd_result_file.write(d)
-        log.info(f"Wrote {pd_result_path}")
-
-        return result

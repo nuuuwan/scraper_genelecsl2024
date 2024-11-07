@@ -1,9 +1,9 @@
-from scraper import ECLK
+from scraper import AdaDerana
 
 
 def main():
 
-    election = ECLK().election
+    election = AdaDerana().election
     print()
     print(election.lk_result)
     print()
