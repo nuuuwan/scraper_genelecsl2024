@@ -12,7 +12,8 @@ class AdaDeranaPDPage(AbstractPDResultsPage):
         super().__init__(
             "https://election.adaderana.lk"
             + "/presidential-election-2024/division_result.php?"
-            + f"dist_id={ed_label}&div_id={pd_label}"
+            + f"dist_id={ed_label}&div_id={pd_label}",
+            do_cache=True,
         )
         self.ed_label = ed_label
         self.pd_label = pd_label

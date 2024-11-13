@@ -39,8 +39,6 @@ class AbstractScraper(object):
             "election.tsv",
         )
         election_file = TSVFile(election_path)
-        if election_file.exists:
-            log.warning(f"File Exists {election_path}")
 
         election = self.election_nocache
         election_file.write(election.d_list)

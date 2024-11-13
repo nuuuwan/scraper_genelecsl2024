@@ -13,7 +13,9 @@ log = Log("ECLKResultsPage")
 class ECLKResultsPage(AbstractPDResultsPage):
 
     def __init__(self, href):
-        super().__init__("https://results.elections.gov.lk/pre2024/" + href)
+        super().__init__(
+            "https://results.elections.gov.lk/pre2024/" + href, do_cache=True
+        )
 
     @classmethod
     @cache

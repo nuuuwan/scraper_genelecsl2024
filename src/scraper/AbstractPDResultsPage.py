@@ -54,7 +54,6 @@ class AbstractPDResultsPage(WebPage):
         pd_result_file = JSONFile(pd_result_path)
         if pd_result_file.exists:
             d = pd_result_file.read()
-            log.warning(f"File Exists {pd_result_path}")
             return Result.from_dict(d)
 
         result = self.pd_result_nocache
