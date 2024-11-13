@@ -7,10 +7,7 @@ def main():  # noqa
     for Scraper in [ECLK, AdaDerana, NewsWire]:
         print("-" * 40)
         print(Scraper.__name__)
-        print("-" * 40)
         election = Scraper().election
-        print(election.lk_result)
-        print(election.cum_party_to_seats)
 
         if first_election is None:
             first_election = election
