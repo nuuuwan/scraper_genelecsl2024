@@ -1,7 +1,7 @@
 from functools import cached_property
 
 from elections_lk import PartyToVotes, VoteSummary
-from utils import Log
+from utils import Log, Time, TimeFormat
 
 from core import OngoingResult
 from utils_future import StringX, WebPage
@@ -64,6 +64,10 @@ class NewsWireEDPage(WebPage):
 
         return PartyToVotes(d)
 
+    @cached_property
+    def timestamp(self):
+        return TimeFormat("%Y-%m-%d %H:%M:%S:000").format(Time.now())
+
     def get_pd_result(self, div):
         id = div["id"]
         pd_id = "EC-" + id.split("_")[-1]
@@ -77,7 +81,7 @@ class NewsWireEDPage(WebPage):
             id=pd_id,
             vote_summary=self.get_vote_summary(div),
             party_to_votes=self.get_party_to_votes(div),
-            ut=None,
+            timestamp=self.timestamp,
         )
 
     @cached_property

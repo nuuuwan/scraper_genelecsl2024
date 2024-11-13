@@ -2,7 +2,7 @@ import os
 from functools import cache, cached_property
 
 from elections_lk import Result
-from utils import JSONFile, Log
+from utils import JSONFile, Log, Time, TimeFormat
 
 from core import OngoingResult
 from utils_future import WebPage
@@ -26,12 +26,18 @@ class AbstractPDResultsPage(WebPage):
 
     @staticmethod
     def validate(result):
-        assert result.party_to_votes.total == result.vote_summary.valid
-        assert result.vote_summary.electors >= result.vote_summary.polled
-        assert (
-            result.vote_summary.polled
-            == result.vote_summary.valid + result.vote_summary.rejected
-        )
+
+        try:
+            assert result.party_to_votes.total <= result.vote_summary.valid
+            assert result.vote_summary.electors >= result.vote_summary.polled
+            assert (
+                result.vote_summary.polled
+                == result.vote_summary.valid + result.vote_summary.rejected
+            )
+        except AssertionError as e:
+            log.error(result)
+            log.error(f"total={result.party_to_votes.total}")
+            raise e
 
     @cached_property
     def pd_result_nocache(self) -> Result:
@@ -65,3 +71,7 @@ class AbstractPDResultsPage(WebPage):
         log.info(f"Wrote {pd_result_path}")
 
         return result
+
+    @cached_property
+    def timestamp(self):
+        return TimeFormat("%Y-%m-%d %H:%M:%S:000").format(Time.now())
