@@ -1,9 +1,3 @@
-function print_highlight {
-    echo ""
-    Write-Host -BackgroundColor Green $args[0]
-    echo ""
-}
-
 print_highlight("1. Running scrape")
 # python workflows/scrape/eclk.py
 python workflows/scrape/adaderana.py

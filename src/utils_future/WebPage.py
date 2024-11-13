@@ -11,8 +11,9 @@ log = Log("WebPage")
 
 
 class WebPage(object):
-    def __init__(self, url):
+    def __init__(self, url, do_cache=False):
         self.url = url
+        self.do_cache = do_cache
 
     @staticmethod
     def get_temp_data_path():
@@ -37,11 +38,9 @@ class WebPage(object):
 
     @cached_property
     def html(self):
-        html_path = os.path.join(
-            WebPage.HTML_DIR, Hash.md5(self.url) + ".html"
-        )
+        html_path = os.path.join(WebPage.HTML_DIR, Hash.md5(self.url) + ".html")
         html_file = File(html_path)
-        if html_file.exists:
+        if html_file.exists and self.do_cache:
             return html_file.read()
 
         timeout = 1
@@ -59,7 +58,7 @@ class WebPage(object):
         n = len(html)
         size_k = n / 1024
         html_file.write(html)
-        log.info(f"Wrote {html_path} {size_k:.2f}KB")
+        log.debug(f"Wrote {html_path} {size_k:.2f}KB")
         return html
 
     @cached_property
