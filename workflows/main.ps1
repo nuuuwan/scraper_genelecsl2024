@@ -1,6 +1,6 @@
 print_highlight("1. Running scrape")
-# python workflows/scrape/eclk.py
-python workflows/scrape/adaderana.py
+python workflows/scrape/eclk.py
+# python workflows/scrape/adaderana.py
 
 
 print_highlight("2. Copying to React Repo & Pushing to GitHub")
