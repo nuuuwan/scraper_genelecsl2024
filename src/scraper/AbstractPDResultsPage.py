@@ -4,6 +4,7 @@ from functools import cache, cached_property
 from elections_lk import Result
 from utils import JSONFile, Log
 
+from core import OngoingResult
 from utils_future import WebPage
 
 log = Log("AbstractPDResultsPage")
@@ -35,10 +36,11 @@ class AbstractPDResultsPage(WebPage):
     @cached_property
     def pd_result_nocache(self) -> Result:
 
-        result = Result(
+        result = OngoingResult(
             id=self.pd_id,
             vote_summary=self.vote_summary,
             party_to_votes=self.party_to_votes,
+            timestamp=self.timestamp,
         )
         self.validate(result)
 
@@ -54,7 +56,7 @@ class AbstractPDResultsPage(WebPage):
         pd_result_file = JSONFile(pd_result_path)
         if pd_result_file.exists:
             d = pd_result_file.read()
-            return Result.from_dict(d)
+            return OngoingResult.from_dict(d)
 
         result = self.pd_result_nocache
 

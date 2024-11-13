@@ -1,4 +1,6 @@
-from elections_lk import ElectionParliamentary, Result
+from elections_lk import ElectionParliamentary
+
+from core.OngoingResult import OngoingResult
 
 
 class OngoingElection(ElectionParliamentary):
@@ -10,4 +12,4 @@ class OngoingElection(ElectionParliamentary):
 
     @staticmethod
     def from_d_list(d_list):
-        return OngoingElection([Result.from_dict(d) for d in d_list])
+        return OngoingElection([OngoingResult.from_dict(d) for d in d_list])

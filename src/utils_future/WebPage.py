@@ -38,7 +38,9 @@ class WebPage(object):
 
     @cached_property
     def html(self):
-        html_path = os.path.join(WebPage.HTML_DIR, Hash.md5(self.url) + ".html")
+        html_path = os.path.join(
+            WebPage.HTML_DIR, Hash.md5(self.url) + ".html"
+        )
         html_file = File(html_path)
         if html_file.exists and self.do_cache:
             return html_file.read()

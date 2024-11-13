@@ -1,6 +1,6 @@
 from functools import cache, cached_property
 
-from elections_lk import PartyToVotes, Result, VoteSummary
+from elections_lk import PartyToVotes, VoteSummary
 from gig import Ent, EntType
 
 from scraper.AbstractPDResultsPage import AbstractPDResultsPage
@@ -75,7 +75,3 @@ class AdaDeranaPDPage(AbstractPDResultsPage):
             idx["valid"],
             idx["rejected"],
         )
-
-    @cached_property
-    def pd_result_nocache(self):
-        return Result(self.pd_id, self.vote_summary, self.party_to_votes)

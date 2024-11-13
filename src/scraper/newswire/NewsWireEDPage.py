@@ -1,8 +1,9 @@
 from functools import cached_property
 
-from elections_lk import PartyToVotes, Result, VoteSummary
+from elections_lk import PartyToVotes, VoteSummary
 from utils import Log
 
+from core import OngoingResult
 from utils_future import StringX, WebPage
 
 log = Log("NewsWireEDPage")
@@ -72,10 +73,11 @@ class NewsWireEDPage(WebPage):
 
         assert self.ed_id in pd_id
 
-        return Result(
+        return OngoingResult(
             id=pd_id,
             vote_summary=self.get_vote_summary(div),
             party_to_votes=self.get_party_to_votes(div),
+            ut=None,
         )
 
     @cached_property

@@ -7,6 +7,7 @@ class TSVFile(TSVFileOld):
 
         BASE_KEY_LIST = [
             "entity_id",
+            "timestamp",
             "electors",
             "polled",
             "valid",
