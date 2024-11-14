@@ -46,12 +46,12 @@ class CommonLocalState:
         common_local_state = CommonLocalState.load()
         if common_local_state:
 
-            if n_results_display_new < common_local_state.n_results_display:
+            if n_results_display_new <= common_local_state.n_results_display:
                 log.error(
-                    f"❌ Data loss: {n_results_display_new}"
-                    + f" < {common_local_state.n_results_display}"
+                    f"❌ No data gain: {n_results_display_new}"
+                    + f" <= {common_local_state.n_results_display}"
                 )
-                return common_local_state
+                raise Exception("No data gain")
 
         common_local_state = CommonLocalState(
             n_results_display=n_results_display_new
