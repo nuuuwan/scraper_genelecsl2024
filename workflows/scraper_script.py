@@ -11,14 +11,17 @@ log = Log("ScraperScript")
 
 
 class LocalAppUser:
-    LOCAL_APP_PATH = os.path.join(
-        "C:/Users",
-        "ASUS",
-        "Not.Dropbox",
-        "CODING",
-        "js_react",
-        "election",
-    )
+    # LOCAL_APP_PATH = os.path.join(
+    #     "C:/Users",
+    #     "ASUS",
+    #     "Not.Dropbox",
+    #     "CODING",
+    #     "js_react",
+    #     "election",
+    # )
+
+    LOCAL_APP_PATH = os.path.join("/Users","nuwansenaratna","Desktop","election")
+    
     LOCAL_APP_FILE_DB_FILE = os.path.join(
         "public",
         "data",
