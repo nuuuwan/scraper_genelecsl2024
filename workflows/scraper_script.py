@@ -99,7 +99,7 @@ class CommonLocalStateUpdate(ScriptCommand):
         election = eclk.election
         lk_result = election.lk_result
         npp_votes = lk_result.party_to_votes["NPP"]
-        self.speak(f"{npp_votes}")
+        self.speak(f"{npp_votes:,}")
 
 
 class LocalAppFileDBCopy(ScriptCommand, LocalAppUser):
