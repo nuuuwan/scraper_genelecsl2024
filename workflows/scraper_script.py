@@ -3,6 +3,7 @@ import shutil
 import time
 from functools import cache
 
+import pyttsx3
 from utils import Log
 
 from common_local_state import CommonLocalState
@@ -46,6 +47,13 @@ class ScriptCommand:
     def __str__(self):
         return self.__class__.__name__
 
+    @staticmethod
+    def speak(text):
+        engine = pyttsx3.init()
+        engine.setProperty("rate", 150)
+        engine.say(text)
+        engine.runAndWait()
+
 
 class Script:
     def run(self):
@@ -54,15 +62,13 @@ class Script:
             print("-" * 64)
             log.info(f"{i}) Running {command}")
 
-            command.run()
-
-            # try:
-            #     command.run()
-            # except Exception as e:
-            #     log.error(str(e))
-            #     log.error("🛑 STOPPED!")
-            #     print("-" * 64)
-            #     break
+            try:
+                command.run()
+            except Exception as e:
+                log.error(str(e))
+                log.error("🛑 STOPPED!")
+                print("-" * 64)
+                break
             log.info("✅ DONE!")
         print("-" * 64)
 
@@ -76,12 +82,24 @@ class Script:
 class ECLKScrape(ScriptCommand):
     def run(self):
         eclk = ECLK()
-        eclk.election
+        election = eclk.election
+        print("")
+        print(election.lk_result.vote_summary)
+        print("")
+        print(election.lk_result.party_to_votes)
 
 
 class CommonLocalStateUpdate(ScriptCommand):
     def run(self):
-        CommonLocalState.update()
+        common_local_state = CommonLocalState.update()
+        n_results_display = common_local_state.n_results_display
+        self.speak(f"Data Gain! Now {n_results_display}")
+
+        eclk = ECLK()
+        election = eclk.election
+        lk_result = election.lk_result
+        npp_votes = lk_result.party_to_votes.get("NPP", 0)
+        self.speak(f"{npp_votes}")
 
 
 class LocalAppFileDBCopy(ScriptCommand, LocalAppUser):
@@ -118,4 +136,4 @@ class ScraperScript(Script):
 
 
 if __name__ == "__main__":
-    ScraperScript().run()
+    ScraperScript().run_forever(time_wait=60)
