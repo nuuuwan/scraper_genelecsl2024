@@ -58,7 +58,9 @@ class NewsWireEDPage(WebPage):
                 continue
             candidate = td_list[0].text.strip()
 
-            party = NewsWireEDPage.CANDIDATE_TO_PARTY.get(candidate, candidate)
+            party = NewsWireEDPage.CANDIDATE_TO_PARTY.get(
+                candidate, candidate
+            )
             votes = StringX(td_list[1].text.strip()).int
             d[party] = votes
 

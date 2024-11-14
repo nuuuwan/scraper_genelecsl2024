@@ -2,7 +2,7 @@ from functools import cache, cached_property
 
 from elections_lk import PartyToVotes, VoteSummary
 from gig import Ent, EntType
-from utils import Log, TimeFormat
+from utils import Log
 
 from scraper.AbstractPDResultsPage import AbstractPDResultsPage
 from utils_future import StringX
@@ -90,5 +90,7 @@ class ECLKResultsPage(AbstractPDResultsPage):
 
     @cached_property
     def timestamp(self):
-        p = self.soup.find("p", class_="card-subtitle card-subtitle-dash mb-0")
+        p = self.soup.find(
+            "p", class_="card-subtitle card-subtitle-dash mb-0"
+        )
         return p.text.strip()
