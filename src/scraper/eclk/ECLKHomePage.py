@@ -10,7 +10,9 @@ log = Log("ECLKHomePage")
 
 class ECLKHomePage(WebPage):
     def __init__(self):
-        super().__init__("https://results.elections.gov.lk/pre2024/")
+        # Presidential
+        # "https://results.elections.gov.lk/pre2024/"
+        super().__init__("https://results.elections.gov.lk/")
 
     @cached_property
     def results_page_list(self) -> list[ECLKResultsPage]:
@@ -18,6 +20,8 @@ class ECLKHomePage(WebPage):
         results_page_list = []
         for link in self.soup.find_all("a", class_="nav-link"):
             href = link.get("href")
+            if not href:
+                continue
             if "pd_division" not in href:
                 continue
             results_page = ECLKResultsPage(href)

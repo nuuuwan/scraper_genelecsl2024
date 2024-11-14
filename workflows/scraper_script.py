@@ -33,8 +33,8 @@ class LocalAppUser:
         "public",
         "data",
         "elections",
-        # "government-elections-parliamentary.regions-ec.2024.tsv",
-        "government-elections-presidential.regions-ec.2024.tsv",
+        "government-elections-parliamentary.regions-ec.2024.tsv",
+        # "government-elections-presidential.regions-ec.2024.tsv",
     )
 
     LOCAL_APP_FILE_DB_PATH = os.path.join(
@@ -51,19 +51,18 @@ class Script:
     def run(self):
         for i, command in enumerate(self.commands, start=1):
             print("")
-
+            print("-" * 64)
             log.info(f"{i}) Running {command}")
 
             try:
                 command.run()
             except Exception as e:
-                log.error(e)
-                log.warning("🛑 STOPPED!")
+                log.error(str(e))
+                log.error("🛑 STOPPED!")
                 print("-" * 64)
                 break
-
             log.info("✅ DONE!")
-            print("-" * 64)
+        print("-" * 64)
 
     def run_forever(self, time_wait=60):
         while True:

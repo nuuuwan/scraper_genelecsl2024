@@ -46,7 +46,8 @@ class AbstractScraper(object):
         election_file = TSVFile(election_path)
 
         election = self.election_nocache
+        if not election.d_list:
+            raise ValueError("No election data found")
         election_file.write(election.d_list)
-
         log.info(f"Wrote {election_path}")
         return election
