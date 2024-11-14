@@ -136,4 +136,4 @@ class ScraperScript(Script):
 
 
 if __name__ == "__main__":
-    ScraperScript().run_forever(time_wait=60)
+    ScraperScript().run_forever(time_wait=10)
