@@ -1,6 +1,7 @@
 import os
 import shutil
 import time
+from functools import cache
 
 from utils import Log
 
@@ -11,17 +12,23 @@ log = Log("ScraperScript")
 
 
 class LocalAppUser:
-    # LOCAL_APP_PATH = os.path.join(
-    #     "C:/Users",
-    #     "ASUS",
-    #     "Not.Dropbox",
-    #     "CODING",
-    #     "js_react",
-    #     "election",
-    # )
 
-    LOCAL_APP_PATH = os.path.join("/Users","nuwansenaratna","Desktop","election")
-    
+    @staticmethod
+    @cache
+    def get_local_app_path():
+        if os.name == "nt":
+            return os.path.join(
+                "C:/Users",
+                "ASUS",
+                "Not.Dropbox",
+                "CODING",
+                "js_react",
+                "election",
+            )
+        return os.path.join("/Users", "nuwansenaratna", "Desktop", "election")
+
+    LOCAL_APP_PATH = get_local_app_path()
+
     LOCAL_APP_FILE_DB_FILE = os.path.join(
         "public",
         "data",
