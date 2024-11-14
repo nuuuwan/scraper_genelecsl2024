@@ -54,13 +54,15 @@ class Script:
             print("-" * 64)
             log.info(f"{i}) Running {command}")
 
-            try:
-                command.run()
-            except Exception as e:
-                log.error(str(e))
-                log.error("🛑 STOPPED!")
-                print("-" * 64)
-                break
+            command.run()
+
+            # try:
+            #     command.run()
+            # except Exception as e:
+            #     log.error(str(e))
+            #     log.error("🛑 STOPPED!")
+            #     print("-" * 64)
+            #     break
             log.info("✅ DONE!")
         print("-" * 64)
 
@@ -116,4 +118,4 @@ class ScraperScript(Script):
 
 
 if __name__ == "__main__":
-    ScraperScript().run_forever()
+    ScraperScript().run()

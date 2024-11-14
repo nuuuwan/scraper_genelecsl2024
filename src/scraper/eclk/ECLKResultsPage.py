@@ -14,7 +14,7 @@ class ECLKResultsPage(AbstractPDResultsPage):
 
     def __init__(self, href):
         super().__init__(
-            "https://results.elections.gov.lk/pre2024/" + href, do_cache=True
+            "https://results.elections.gov.lk/" + href, do_cache=True
         )
 
     @classmethod
@@ -42,19 +42,20 @@ class ECLKResultsPage(AbstractPDResultsPage):
 
     @cached_property
     def party_to_votes(self) -> PartyToVotes:
-        table_list = self.soup.find_all("table")
-        table = table_list[0]
-        tr_list = table.find_all("tr")
+
+        div_table = self.soup.find("div", class_="table-responsive")
+        div_list = div_table.find_all("div", "py-2")
+
         d = {}
-        for tr in tr_list:
+        for div in div_list:
+            img = div.find("img")
+            p_list = div.find_all("p")
 
-            td_text_list = [td.text.strip() for td in tr.find_all("td")]
-            if len(td_text_list) != 4:
-                continue
+            party = img["alt"]
+            votes = StringX(p_list[1].text).int
 
-            party = td_text_list[1]
-            votes = StringX(td_text_list[2]).int
             d[party] = votes
+
         d = dict(sorted(d.items(), key=lambda x: x[1], reverse=True))
         return PartyToVotes(d)
 
@@ -68,7 +69,7 @@ class ECLKResultsPage(AbstractPDResultsPage):
     @cached_property
     def vote_summary(self) -> VoteSummary:
         table_list = self.soup.find_all("table")
-        table = table_list[1]
+        table = table_list[0]
         tr_list = table.find_all("tr")
         d = {}
         for tr in tr_list:
@@ -90,7 +91,5 @@ class ECLKResultsPage(AbstractPDResultsPage):
 
     @cached_property
     def timestamp(self):
-        p = self.soup.find(
-            "p", class_="card-subtitle card-subtitle-dash mb-0"
-        )
+        p = self.soup.find("p", class_="card-subtitle card-subtitle-dash mb-0")
         return p.text.strip()
