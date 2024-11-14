@@ -11,12 +11,12 @@ log = Log("NewsWireEDPage")
 
 class NewsWireEDPage(WebPage):
     CANDIDATE_TO_PARTY = {
-        "ANURA KUMARA DISSANAYAKE": f"NPP",
-        "RANIL WICKREMESINGHE": f"IND16",
-        "SAJITH PREMADASA": f"SJB",
-        "NAMAL RAJAPAKSA": f"SLPP",
-        "DILITH JAYAWEERA": f"SLCP",
-        "ARIYANETHIRAN PAKKIYASELVAM": f"IND9",
+        "ANURA KUMARA DISSANAYAKE": "NPP",
+        "RANIL WICKREMESINGHE": "IND16",
+        "SAJITH PREMADASA": "SJB",
+        "NAMAL RAJAPAKSA": "SLPP",
+        "DILITH JAYAWEERA": "SLCP",
+        "ARIYANETHIRAN PAKKIYASELVAM": "IND9",
     }
 
     def __init__(self, ed_id, href):
