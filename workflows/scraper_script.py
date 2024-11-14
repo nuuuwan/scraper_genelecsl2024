@@ -98,7 +98,7 @@ class CommonLocalStateUpdate(ScriptCommand):
         eclk = ECLK()
         election = eclk.election
         lk_result = election.lk_result
-        npp_votes = lk_result.party_to_votes.get("NPP", 0)
+        npp_votes = lk_result.party_to_votes["NPP"]
         self.speak(f"{npp_votes}")
 
 
