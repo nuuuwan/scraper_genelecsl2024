@@ -11,7 +11,7 @@ class AdaDeranaPDPage(AbstractPDResultsPage):
     def __init__(self, ed_label, pd_label):
         super().__init__(
             "https://election.adaderana.lk"
-            + "/presidential-election-2024/division_result.php?"
+            + "/general-election-2024/division_result.php?"
             + f"dist_id={ed_label}&div_id={pd_label}",
             do_cache=True,
         )
@@ -33,6 +33,10 @@ class AdaDeranaPDPage(AbstractPDResultsPage):
     @cached_property
     def pd_id(self) -> str:
         pd_label = self.pd_label
+
+        pd_name = self.PD_NAME_IDX.get(pd_label, pd_label)
+        if pd_name in ["Displaced-Votes"]:
+            return None
         ed_label = self.ed_label
 
         if "Postal" in pd_label:
@@ -41,7 +45,6 @@ class AdaDeranaPDPage(AbstractPDResultsPage):
             ed = Ent.list_from_name_fuzzy(ed_name, EntType.ED)[0]
             return ed.id + "P"
 
-        pd_name = self.PD_NAME_IDX.get(pd_label, pd_label)
         pd = Ent.list_from_name_fuzzy(pd_name, EntType.PD)[0]
         return pd.id
 

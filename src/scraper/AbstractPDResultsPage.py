@@ -41,7 +41,8 @@ class AbstractPDResultsPage(WebPage):
 
     @cached_property
     def pd_result_nocache(self) -> Result:
-
+        if self.pd_id is None:
+            return None
         result = OngoingResult(
             id=self.pd_id,
             vote_summary=self.vote_summary,
@@ -54,6 +55,8 @@ class AbstractPDResultsPage(WebPage):
 
     @cached_property
     def pd_result(self) -> Result:
+        if not self.pd_id:
+            return None
 
         pd_result_path = os.path.join(
             self.__class__.get_pd_result_dir(),

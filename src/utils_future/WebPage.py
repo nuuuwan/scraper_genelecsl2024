@@ -44,7 +44,7 @@ class WebPage(object):
             log.debug(f"File exists: {html_path}")
             return html_file.read()
 
-        timeout = 1
+        timeout = 10
         html = None
         while True:
             log.debug(f"🌏 {self.url} [{timeout}s]")
@@ -53,7 +53,7 @@ class WebPage(object):
                 break
             except Exception as e:
                 log.error(f"Error: {e}")
-                timeout *= 2
+                timeout = int(timeout * 1.5)
                 time.sleep(timeout)
 
         n = len(html)

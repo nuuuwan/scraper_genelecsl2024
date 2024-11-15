@@ -10,7 +10,7 @@ class AdaDeranaEDPage(WebPage):
     def __init__(self, ed_label):
         super().__init__(
             "https://election.adaderana.lk"
-            + "/presidential-election-2024/district_result.php?"
+            + "/general-election-2024/district_result.php?"
             + f"dist_id={ed_label}",
             do_cache=True,
         )

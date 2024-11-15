@@ -10,5 +10,8 @@ class AdaDerana(AbstractScraper):
         pd_results = []
         for ed_page in AdaDeranaEDPage.list_all():
             for pd_page in ed_page.pd_page_list:
-                pd_results.append(pd_page.pd_result)
+                pd_result = pd_page.pd_result
+                if not pd_result:
+                    continue
+                pd_results.append(pd_result)
         return pd_results
